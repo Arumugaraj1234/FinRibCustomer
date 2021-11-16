@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>85415169332-5a0q1l807ggfeabfsajttusv9f8moote.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.85415169332-5a0q1l807ggfeabfsajttusv9f8moote</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAmuoPzYeyeJJSu3t-RbO7ahc_FIQha4JY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>85415169332</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.clt.fin-and-rib</string>
+	<key>PROJECT_ID</key>
+	<string>finnrib-android-app-2021</string>
+	<key>STORAGE_BUCKET</key>
+	<string>finnrib-android-app-2021.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:85415169332:ios:454988b228dd8664bda961</string>
+</dict>
+</plist>
