@@ -38,16 +38,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
         name: 'Delivery Within 2 Hours'),
     Quality(
         icon: 'https://www.finandrib.com/Images/icons/3.png',
-        name: 'No         Preservatives'),
+        name: 'No Preservatives'),
     Quality(
         icon: 'https://www.finandrib.com/Images/icons/5.png',
-        name: 'Antibiotic            free'),
+        name: 'Antibiotic free'),
     Quality(
         icon: 'https://www.finandrib.com/Images/icons/4.png',
-        name: 'No           Chemicals'),
+        name: 'No Chemicals'),
     Quality(
         icon: 'https://www.finandrib.com/Images/icons/2.png',
-        name: 'Halal    Certification')
+        name: 'Halal Certification')
   ];
 
   List<String> _headerImages = [
@@ -125,7 +125,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
     // await NetworkServices.shared
     //     .getProductByShop(context: context, shopId: widget.shops[0].id);
 
-    var geoLocator = Geolocator();
+    /*var geoLocator = Geolocator();
     var status = await geoLocator.checkGeolocationPermissionStatus();
     print('Location Status: $status');
     var enableStatus = await geoLocator.isLocationServiceEnabled();
@@ -186,7 +186,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _shopAvailableStatus = false;
       });
       _startTimerToRefreshProducts();
-    }
+    }*/
+
+    Provider.of<DataServices>(context, listen: false).setSelectedShop(0);
+    //Provider.of<DataServices>(context, listen: false).setShopsFlagRemarks();
+    await NetworkServices.shared
+        .getProductByShop(context: context, shopId: widget.shops[0].id);
+    setState(() {
+      _shopAvailableStatus = false;
+    });
+    _startTimerToRefreshProducts();
   }
 
   Widget _progressGroupLayout() {
@@ -345,72 +354,85 @@ class _CategoryScreenState extends State<CategoryScreen> {
           isLoggedIn: dataServices.isUserLoggedIn ?? false,
           services: dataServices,
         ),
-        appBar: AppBar(
-          backgroundColor: Colors.deepOrange,
-          title: Text(
-            'Fin & Rib',
-            style: kTextStyleAppBarTitle,
-          ),
-          actions: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.0),
-              child: Center(
-                child: Stack(
-                  children: <Widget>[
-                    IconButton(
-                      icon: new Icon(
-                        Icons.shopping_cart,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Provider.of<DataServices>(context, listen: false)
-                            .setSelectedDishes();
-                        print(dataServices.selectedProducts.length);
-                        if (dataServices.selectedProducts.length > 0) {
-                          Navigator.of(context, rootNavigator: true).push(
-                            MaterialPageRoute(builder: (context) {
-                              return CartScreen();
-                            }),
-                          );
-                        }
-                      },
-                    ),
-                    Positioned(
-                      right: 0,
-                      child: Container(
-                        height: 24.0,
-                        width: 24.0,
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        constraints: BoxConstraints(
-                          minWidth: 5,
-                          minHeight: 5,
-                        ),
-                        child: Text(
-                          dataServices.selectedItemCount.toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    )
-                  ],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(30.0),
+          child: AppBar(
+            leading: Builder(builder: (context) {
+              return Transform.translate(
+                offset: Offset(0.0, -5.0),
+                child: IconButton(
+                  icon: Icon(Icons.menu),
+                  onPressed: () => Scaffold.of(context).openDrawer(),
                 ),
-              ),
-            )
-          ],
+              );
+            }),
+            backgroundColor: Colors.deepOrange,
+            title: Text(
+              'Fin & Rib',
+              style: kTextStyleAppBarTitle,
+              textAlign: TextAlign.center,
+            ),
+            actions: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 5.0),
+                child: Center(
+                  child: Stack(
+                    children: <Widget>[
+                      IconButton(
+                        icon: new Icon(
+                          Icons.shopping_cart,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          Provider.of<DataServices>(context, listen: false)
+                              .setSelectedDishes();
+                          print(dataServices.selectedProducts.length);
+                          if (dataServices.selectedProducts.length > 0) {
+                            Navigator.of(context, rootNavigator: true).push(
+                              MaterialPageRoute(builder: (context) {
+                                return CartScreen();
+                              }),
+                            );
+                          }
+                        },
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: Container(
+                          height: 24.0,
+                          width: 24.0,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 5,
+                            minHeight: 5,
+                          ),
+                          child: Text(
+                            dataServices.selectedItemCount.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
         body: Stack(
           children: [
             Container(
               child: Column(
                 children: [
-                  Container(
+                  /*Container(
                     height: 25,
                     child: Stack(
                       children: [
@@ -454,9 +476,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
                         )
                       ],
                     ),
-                  ),
+                  ),*/
                   Container(
-                    height: 110, //MediaQuery.of(context).size.height / 4
+                    height: 190, //MediaQuery.of(context).size.height / 4
                     width: MediaQuery.of(context).size.width,
                     margin: EdgeInsets.symmetric(
                       horizontal: 0,
@@ -466,11 +488,15 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           autoPlay: true, reverse: true, viewportFraction: 1.0),
                       items: _headerImages
                           .map(
-                            (item) => Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage(item),
-                                    fit: BoxFit.cover),
+                            (item) => Card(
+                              elevation: 2.5,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.white),
+                                  image: DecorationImage(
+                                      image: NetworkImage(item),
+                                      fit: BoxFit.cover),
+                                ),
                               ),
                             ),
                           )
@@ -478,7 +504,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     ),
                   ),
                   Container(
-                    height: 90,
+                    height: 60,
                     child: AnimationLimiter(
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -1022,12 +1048,12 @@ class QualityCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
       child: Container(
-        height: 74.0,
-        width: 70.0,
+        height: 54.0,
+        width: 50.0,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(
-            Radius.circular(10.0),
+            Radius.circular(6.0),
           ),
           boxShadow: [
             BoxShadow(
@@ -1061,7 +1087,7 @@ class QualityCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontFamily: 'Calibri',
-                      fontSize: 9,
+                      fontSize: 5,
                       fontWeight: FontWeight.bold),
                 ),
               )

@@ -106,14 +106,14 @@ class _OtpVerificationForPhoneChangeState
                             child: PinCodeTextField(
                               backgroundColor: Colors.transparent,
                               controller: _otpTc,
-                              textInputType: TextInputType.number,
+                              keyboardType: TextInputType.number,
                               length: 4,
                               pinTheme: PinTheme(
                                   activeColor: Colors.black,
                                   inactiveColor: Colors.black,
                                   selectedColor: Colors.deepOrange,
                                   borderWidth: 1.0),
-                              obsecureText: false,
+                              obscureText: false,
                               animationDuration: Duration(milliseconds: 300),
                               onChanged: (value) {},
                               textStyle: TextStyle(
