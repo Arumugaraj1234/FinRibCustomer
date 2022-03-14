@@ -144,14 +144,16 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.deepOrange,
-        title: Text(
-          'Select Location',
-          style: kTextStyleAppBarTitle,
-        ),
+    AppBar appBar = AppBar(
+      backgroundColor: Colors.deepOrange,
+      title: Text(
+        'Select Location',
+        style: kTextStyleAppBarTitle,
       ),
+    );
+
+    return Scaffold(
+      appBar: appBar,
       body: SingleChildScrollView(
         physics: (_landMarkFc.hasFocus ||
                 _streetFc.hasFocus ||
@@ -161,7 +163,9 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             : NeverScrollableScrollPhysics(),
         child: Container(
           color: Colors.white,
-          height: MediaQuery.of(context).size.height - 80,
+          height: MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).viewPadding.top,
           child: Column(
             children: <Widget>[
               Expanded(

@@ -2,6 +2,7 @@ import 'package:finandrib/models/init_settings.dart';
 import 'package:finandrib/models/network_response.dart';
 import 'package:finandrib/support_files/network_services.dart';
 import 'package:flutter/material.dart';
+import 'package:launch_review/launch_review.dart';
 
 import 'home_screen.dart';
 
@@ -97,14 +98,24 @@ class _InitialInstructionScreenState extends State<InitialInstructionScreen> {
                         color: Colors.orange,
                       ),
                     ),
-                    Visibility(
-                      visible: settings.status == 2 ? false : true,
-                      child: SizedBox(
-                        width: 50,
-                      ),
+                    SizedBox(
+                      width: 50,
                     ),
+                    // Visibility(
+                    //   visible: (settings.status == 2 || settings.status == 1)
+                    //       ? true
+                    //       : false,
+                    //   child: SizedBox(
+                    //     width: 50,
+                    //   ),
+                    // ),
                     RaisedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        LaunchReview.launch(
+                          androidAppId: "com.clt.fin_and_rib",
+                          iOSAppId: "1561107675",
+                        );
+                      },
                       child: Text(
                         'Update Now',
                         style: TextStyle(color: Colors.white),

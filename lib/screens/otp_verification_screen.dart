@@ -131,6 +131,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             Container(
                               width: 200.0,
                               child: PinCodeTextField(
+                                appContext: context,
                                 backgroundColor: Colors.transparent,
                                 controller: _otpTc,
                                 keyboardType: TextInputType.number,

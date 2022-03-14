@@ -13,6 +13,7 @@ import 'package:finandrib/support_files/data_services.dart';
 import 'package:finandrib/support_files/network_services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:geocoder/geocoder.dart';
@@ -58,6 +59,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
     'https://www.finandrib.com/Images/banner5.png',
     'https://www.finandrib.com/Images/banner6.png'
   ];
+
+  ScrollController _scrollController = new ScrollController(
+    // NEW
+    initialScrollOffset: 0.0, // NEW
+    keepScrollOffset: true, // NEW
+  );
 
   BuildContext _ctx;
   String _areaPinCode = '';
@@ -190,8 +197,22 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
     Provider.of<DataServices>(context, listen: false).setSelectedShop(0);
     //Provider.of<DataServices>(context, listen: false).setShopsFlagRemarks();
-    await NetworkServices.shared
+    NetworkResponse response = await NetworkServices.shared
         .getProductByShop(context: context, shopId: widget.shops[0].id);
+
+    if (response.code == 1) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          // NEW
+          _scrollController.position.maxScrollExtent, // NEW
+          duration: const Duration(milliseconds: 10000), // NEW
+          curve: Curves.ease, // NEW
+        );
+      } else {
+        print("gfmfk ggkg fgkgj");
+      }
+    }
+
     setState(() {
       _shopAvailableStatus = false;
     });
@@ -321,6 +342,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
+  StreamController _isGridViewBuilded = StreamController<int>();
+
   @override
   void initState() {
     super.initState();
@@ -329,6 +352,29 @@ class _CategoryScreenState extends State<CategoryScreen> {
       _getActiveOrdersInLoop();
       _startTimerToCheckForActiveOrders();
       print('Category Init State');
+
+      /*_isGridViewBuilded.stream.listen((flag) {
+        SchedulerBinding.instance?.addPostFrameCallback((timeStamp) {
+          int length = Provider.of<DataServices>(context, listen: false)
+              .categories
+              .length;
+
+          if (flag == length) {
+            Future.delayed(const Duration(milliseconds: 500), () {
+              _scrollController.addListener(() {
+                if (_scrollController.hasClients) {
+                  _scrollController.animateTo(
+                    // NEW
+                    _scrollController.position.maxScrollExtent, // NEW
+                    duration: const Duration(milliseconds: 10000), // NEW
+                    curve: Curves.ease, // NEW
+                  );
+                }
+              });
+            });
+          }
+        });
+      });*/
     });
   }
 
@@ -488,15 +534,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                           autoPlay: true, reverse: true, viewportFraction: 1.0),
                       items: _headerImages
                           .map(
-                            (item) => Card(
-                              elevation: 2.5,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.white),
-                                  image: DecorationImage(
-                                      image: NetworkImage(item),
-                                      fit: BoxFit.cover),
-                                ),
+                            (item) => Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.white),
+                                image: DecorationImage(
+                                    image: NetworkImage(item),
+                                    fit: BoxFit.cover),
                               ),
                             ),
                           )
@@ -504,7 +547,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     ),
                   ),
                   Container(
-                    height: 60,
+                    height: 70,
                     child: AnimationLimiter(
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -514,7 +557,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               position: index,
                               duration: const Duration(milliseconds: 1000),
                               child: SlideAnimation(
-                                horizontalOffset: 50.0,
+                                horizontalOffset: 60.0,
                                 child: FadeInAnimation(
                                   child:
                                       QualityCard(quality: _qualities[index]),
@@ -550,44 +593,32 @@ class _CategoryScreenState extends State<CategoryScreen> {
                                           },
                                           itemCount: 5,
                                         )
-                                      : AnimationLimiter(
-                                          child: GridView.count(
-                                            crossAxisCount: 2,
-                                            primary: false,
-                                            childAspectRatio: 1.1,
-                                            children: List.generate(
-                                              dataServices.categories.length,
-                                              (int index) {
-                                                return AnimationConfiguration
-                                                    .staggeredGrid(
-                                                  position: index,
-                                                  duration: const Duration(
-                                                      milliseconds: 1000),
-                                                  columnCount: 5,
-                                                  child: ScaleAnimation(
-                                                    child: FlipAnimation(
-                                                      child: CategoryCard(
-                                                        onSelected: () {
-                                                          Navigator.of(context,
-                                                                  rootNavigator:
-                                                                      true)
-                                                              .push(
-                                                            MaterialPageRoute(
-                                                                builder:
-                                                                    (context) {
-                                                              return ProductGroupScreen(
-                                                                  index);
-                                                            }),
-                                                          );
-                                                        },
-                                                        category: dataServices
-                                                            .categories[index],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            ),
+                                      : GridView.count(
+                                          crossAxisCount: 2,
+                                          scrollDirection: Axis.vertical,
+                                          controller: _scrollController,
+                                          //primary: false,
+                                          childAspectRatio: 1.1,
+                                          children: List.generate(
+                                            dataServices.categories.length,
+                                            (int index) {
+                                              _isGridViewBuilded.add(index + 1);
+                                              return CategoryCard(
+                                                onSelected: () {
+                                                  Navigator.of(context,
+                                                          rootNavigator: true)
+                                                      .push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                      return ProductGroupScreen(
+                                                          index);
+                                                    }),
+                                                  );
+                                                },
+                                                category: dataServices
+                                                    .categories[index],
+                                              );
+                                            },
                                           ),
                                         ),
                                 ),
@@ -957,86 +988,151 @@ class CategoryCard extends StatelessWidget {
     return GestureDetector(
       onTap: onSelected,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 7),
-        child: Container(
-          height: ((MediaQuery.of(context).size.width - 60) / 2),
-          width: (MediaQuery.of(context).size.width - 60) / 2,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(
-              Radius.circular(15),
-            ),
-            border: Border.all(color: Colors.grey),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 2),
           child: Stack(
             children: [
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  width: (((MediaQuery.of(context).size.width - 60) / 2) * 0.7),
-                  height: 50,
-                  decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(
-                      color: Colors.black87,
-                      blurRadius: 5,
-                      spreadRadius: 1,
-                      offset: Offset(0, 0),
-                    )
-                  ]),
+              SizedBox(
+                height: ((MediaQuery.of(context).size.width - 100) / 2),
+                width: (MediaQuery.of(context).size.width - 100) / 2,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
+                  child: Container(
+                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                      BoxShadow(
+                        color: Colors.black54,
+                        blurRadius: 8,
+                        spreadRadius: 1,
+                        offset: Offset(0, 0),
+                      )
+                    ]),
+                  ),
                 ),
               ),
               Container(
-                height: ((MediaQuery.of(context).size.width - 60) / 2),
-                width: (MediaQuery.of(context).size.width - 60) / 2,
-                child: Column(
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(15),
-                            topLeft: Radius.circular(15),
-                          ),
-                          image: DecorationImage(
-                              image: NetworkImage(category.image),
-                              fit: BoxFit.cover),
-                        ),
-                      ),
+                  height: ((MediaQuery.of(context).size.width - 100) / 2),
+                  width: (MediaQuery.of(context).size.width - 100) / 2,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
                     ),
-                    Container(
-                      height: 1,
-                      color: Colors.grey,
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: Container(
+                    height: ((MediaQuery.of(context).size.width - 100) / 2),
+                    width: (MediaQuery.of(context).size.width - 100) / 2,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(15),
+                                topLeft: Radius.circular(15),
+                              ),
+                              image: DecorationImage(
+                                  image: NetworkImage(category.image),
+                                  fit: BoxFit.cover),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          height: 1,
+                          color: Colors.grey,
+                        ),
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(15),
+                                bottomRight: Radius.circular(15),
+                              ),
+                            ),
+                            child: Center(
+                              child: Text(
+                                category.name,
+                                style: kTextStyleCardTitle,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(15),
-                            bottomRight: Radius.circular(15),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            category.name,
-                            style: kTextStyleCardTitle,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
+                  )),
             ],
-          ),
-        ),
-      ),
+          )),
     );
   }
 }
+
+/*Stack(
+children: [
+Container(
+height: ((MediaQuery.of(context).size.width - 90) / 2),
+width: (MediaQuery.of(context).size.width - 90) / 2,
+child: Column(
+children: [
+Expanded(
+flex: 4,
+child: Container(
+decoration: BoxDecoration(
+color: Colors.white,
+borderRadius: BorderRadius.only(
+topRight: Radius.circular(15),
+topLeft: Radius.circular(15),
+),
+image: DecorationImage(
+image: NetworkImage(category.image),
+fit: BoxFit.cover),
+),
+),
+),
+Container(
+height: 1,
+color: Colors.grey,
+),
+Expanded(
+flex: 1,
+child: Container(
+decoration: BoxDecoration(
+color: Colors.white,
+borderRadius: BorderRadius.only(
+bottomLeft: Radius.circular(15),
+bottomRight: Radius.circular(15),
+),
+),
+child: Center(
+child: Text(
+category.name,
+style: kTextStyleCardTitle,
+),
+),
+),
+)
+],
+),
+),
+// Align(
+//   alignment: Alignment.bottomCenter,
+//   child: Container(
+//     width: (((MediaQuery.of(context).size.width - 90) / 2) * 0.7),
+//     height: 0,
+//     decoration: BoxDecoration(boxShadow: [
+//       BoxShadow(
+//         color: Colors.black87,
+//         blurRadius: 5,
+//         spreadRadius: 1,
+//         offset: Offset(0, 0),
+//       )
+//     ]),
+//   ),
+// ),
+],
+),*/
 
 class QualityCard extends StatelessWidget {
   final Quality quality;
@@ -1048,8 +1144,8 @@ class QualityCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 8),
       child: Container(
-        height: 54.0,
-        width: 50.0,
+        height: 64.0,
+        width: 60.0,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.all(
@@ -1113,3 +1209,44 @@ class CategoryShimmerCard extends StatelessWidget {
     );
   }
 }
+
+/*AnimationLimiter(
+child: GridView.count(
+crossAxisCount: 2,
+primary: false,
+childAspectRatio: 1.1,
+children: List.generate(
+dataServices.categories.length,
+(int index) {
+return AnimationConfiguration
+    .staggeredGrid(
+position: index,
+duration: const Duration(
+milliseconds: 1000),
+columnCount: 5,
+child: ScaleAnimation(
+child: SlideAnimation(
+child: CategoryCard(
+onSelected: () {
+Navigator.of(context,
+rootNavigator:
+true)
+    .push(
+MaterialPageRoute(
+builder:
+(context) {
+return ProductGroupScreen(
+index);
+}),
+);
+},
+category: dataServices
+    .categories[index],
+),
+),
+),
+);
+},
+),
+),
+)*/

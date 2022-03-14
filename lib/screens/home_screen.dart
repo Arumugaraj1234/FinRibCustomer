@@ -23,47 +23,71 @@ class _HomeScreenState extends State<HomeScreen> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   DateTime currentBackPressTime;
   List<Shop> _shops = [];
+  // final _items = [
+  //   BottomNavigationBarItem(icon: Image.asset('images/home_icon.png'), label: "HOME",),
+  //   BottomNavigationBarItem(
+  //     icon: Image.asset('images/home_icon.png'),
+  //     title: Text(
+  //       'HOME',
+  //       style: TextStyle(
+  //           fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
+  //     ),
+  //   ),
+  //   BottomNavigationBarItem(
+  //     icon: Image.asset('images/myorder_icon.png'),
+  //     title: Text(
+  //       'MY ORDER',
+  //       style: TextStyle(
+  //           fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
+  //     ),
+  //   ),
+  //   BottomNavigationBarItem(
+  //     icon: Image.asset('images/cart_icon.png'),
+  //     title: Text(
+  //       'MY CART',
+  //       style: TextStyle(
+  //           fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
+  //     ),
+  //   ),
+  //   BottomNavigationBarItem(
+  //     icon: Image.asset('images/search_icon.png'),
+  //     title: Text(
+  //       'SEARCH',
+  //       style: TextStyle(
+  //           fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
+  //     ),
+  //   ),
+  //   BottomNavigationBarItem(
+  //     icon: Image.asset('images/profile_icon.png'),
+  //     title: Text(
+  //       'PROFILE',
+  //       style: TextStyle(
+  //           fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
+  //     ),
+  //   )
+  // ];
+
   final _items = [
     BottomNavigationBarItem(
       icon: Image.asset('images/home_icon.png'),
-      title: Text(
-        'HOME',
-        style: TextStyle(
-            fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
-      ),
+      label: "HOME",
     ),
     BottomNavigationBarItem(
       icon: Image.asset('images/myorder_icon.png'),
-      title: Text(
-        'MY ORDER',
-        style: TextStyle(
-            fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
-      ),
+      label: "MY ORDER",
     ),
     BottomNavigationBarItem(
       icon: Image.asset('images/cart_icon.png'),
-      title: Text(
-        'MY CART',
-        style: TextStyle(
-            fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
-      ),
+      label: "MY CART",
     ),
     BottomNavigationBarItem(
       icon: Image.asset('images/search_icon.png'),
-      title: Text(
-        'SEARCH',
-        style: TextStyle(
-            fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
-      ),
+      label: "SEARCH",
     ),
     BottomNavigationBarItem(
       icon: Image.asset('images/profile_icon.png'),
-      title: Text(
-        'PROFILE',
-        style: TextStyle(
-            fontFamily: 'Calibri', fontSize: 11, fontWeight: FontWeight.w600),
-      ),
-    )
+      label: "PROFILE",
+    ),
   ];
 
   BuildContext _ctx;

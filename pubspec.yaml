@@ -43,7 +43,7 @@ dependencies:
   flutter_picker_view: ^1.1.0
   intl: ^0.16.1
   date_format: ^1.0.8
-  razorpay_flutter: ^1.2.2
+  #razorpay_flutter: ^1.2.2
   scratcher: ^1.4.0
   flutter_dash: ^0.0.1
   flutter_search_bar: ^2.1.0
@@ -53,11 +53,13 @@ dependencies:
   firebase_messaging: ^7.0.2
   sms_autofill: ^2.2.0
   flutter_rating_bar: ^4.0.0
-  flutter_sound: ^7.8.4
-  permission_handler: ^5.1.0+2
-  path_provider: ^1.6.28
-  path: ^1.8.0
+#  flutter_sound: ^7.8.4
+#  permission_handler: ^5.1.0+2
+#  path_provider: ^1.6.28
+#  path: ^1.8.0
   pin_code_fields: ^7.3.0
+  razorpay_flutter: ^1.2.7
+  launch_review: ^3.0.1
 
 
 dev_dependencies:

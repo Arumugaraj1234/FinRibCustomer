@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen>
       Provider.of<DataServices>(context, listen: false).setFcmToken(token);
     });
     var initializationSettingsAndroid =
-        new AndroidInitializationSettings('@mipmap/ic_launcher');
+        new AndroidInitializationSettings('@drawable/ic_stat_notify');
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
@@ -109,17 +109,20 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   void _init() {
-    _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 3));
-    _controller.forward();
-    _controller.addListener(() {
-      setState(() {});
-    });
+    // _controller =
+    //     AnimationController(vsync: this, duration: Duration(seconds: 3));
+    // _controller.forward();
+    // _controller.addListener(() {
+    //   setState(() {});
+    // });
 
-    Future.delayed(const Duration(seconds: 3), () {
-      _getSharedPreferenceDetails();
-      _getInitSettings();
-    });
+    // Future.delayed(const Duration(seconds: 3), () {
+    //   _getSharedPreferenceDetails();
+    //   _getInitSettings();
+    // });
+
+    _getSharedPreferenceDetails();
+    _getInitSettings();
   }
 
   void _getSharedPreferenceDetails() async {
@@ -257,8 +260,8 @@ class _SplashScreenState extends State<SplashScreen>
         ),
         child: Center(
           child: Container(
-            height: 75.0 * _controller.value,
-            width: 200.0 * _controller.value,
+            height: 75.0, //* _controller.value,
+            width: 200.0, //* _controller.value,
             decoration: BoxDecoration(
               image: DecorationImage(
                   image: AssetImage(

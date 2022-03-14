@@ -13,17 +13,17 @@ import 'package:finandrib/support_files/network_services.dart';
 import 'package:finandrib/support_files/razorpay_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+//import 'package:flutter_sound/flutter_sound.dart';
+//import 'package:path_provider/path_provider.dart';
+//import 'package:permission_handler/permission_handler.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
 import 'package:finandrib/screens/check_razor.dart';
-import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
+//import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 
-typedef _Fn = void Function();
-const theSource = AudioSource.microphone;
+// typedef _Fn = void Function();
+// const theSource = AudioSource.microphone;
 
 enum PaymentOption { onlinePayment, cashOnDelivery, cardPayment }
 
@@ -53,7 +53,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
   bool _isWalletUsed = false;
   int _walletAlertFlag = 0;
 
-  File soundFile;
+  //todo: Sound recordings
+
+  /* File soundFile;
   Codec _codec = Codec.aacMP4;
   String _mPath = '';
   FlutterSoundPlayer _mPlayer = FlutterSoundPlayer();
@@ -151,7 +153,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
   _setFilePath() async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
     _mPath = documentDirectory.path + 'tau_file.mp4';
-  }
+  }*/
 
   void _showSnackBar(String text) {
     _scaffoldKey.currentState
@@ -160,11 +162,11 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
 
   @override
   void dispose() {
-    _mPlayer.closeAudioSession();
-    _mPlayer = null;
-
-    _mRecorder.closeAudioSession();
-    _mRecorder = null;
+    // _mPlayer.closeAudioSession();
+    // _mPlayer = null;
+    //
+    // _mRecorder.closeAudioSession();
+    // _mRecorder = null;
     super.dispose();
     _couponTC.dispose();
     _couponFN.dispose();
@@ -172,7 +174,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
 
   @override
   void initState() {
-    _mPlayer.openAudioSession().then((value) {
+    /*_mPlayer.openAudioSession().then((value) {
       setState(() {
         _mPlayerIsInited = true;
       });
@@ -183,7 +185,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
         _mRecorderIsInited = true;
       });
     });
-    _setFilePath();
+    _setFilePath();*/
     super.initState();
     _couponFN.addListener(_onFocusChange);
   }
@@ -208,7 +210,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
             'Check Out',
             style: kTextStyleAppBarTitle,
           ),
-          actions: [
+          /* actions: [
             InkWell(
               onTap: () {},
               child: Padding(
@@ -219,7 +221,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                 ),
               ),
             )
-          ],
+          ],*/
         ),
         body: SingleChildScrollView(
           child: Container(
@@ -419,7 +421,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                   child: Container(
                     child: ListView(
                       children: [
-                        Padding(
+                        /*Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Container(
                             height: 40,
@@ -475,7 +477,7 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                         ),
                         SizedBox(
                           height: 10,
-                        ),
+                        ),*/
                         ConstrainedBox(
                           constraints: BoxConstraints(
                               maxHeight:

@@ -227,6 +227,35 @@ class _ProductScreenState extends State<ProductScreen> {
                       }),
                 ),
               ),
+              InkWell(
+                onTap: () {
+                  dataServices.setSelectedDishes();
+                  if (dataServices.selectedProducts.length > 0) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return CartScreen();
+                      }),
+                    );
+                  } else {
+                    final snackBar = new SnackBar(
+                        content: new Text("Your cart is empty"),
+                        backgroundColor: Colors.red);
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+                child: Container(
+                  height: 40,
+                  color: Colors.deepOrange,
+                  child: Center(
+                    child: Text(
+                      "View Cart",
+                      style: kTextStyleCalibriBold.copyWith(
+                          color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+              ),
               Container(
                 height: 40,
                 child: Row(
