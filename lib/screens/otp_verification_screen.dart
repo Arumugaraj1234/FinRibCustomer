@@ -216,6 +216,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                           );
                                         }
                                       } else {
+                                        print(response.message);
                                         _showSnackBar(response.message);
                                       }
                                     } else {

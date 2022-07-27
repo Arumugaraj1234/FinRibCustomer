@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Product {
   int id;
   String imageLink;
@@ -19,6 +21,7 @@ class Product {
   double grams;
   String thumbNail;
   int gstPercentage;
+  int offerFlag;
 
   Product(
       {this.id,
@@ -40,7 +43,8 @@ class Product {
       this.isItemSizeOptionsAvailable,
       this.grams,
       this.thumbNail,
-      this.gstPercentage});
+      this.gstPercentage,
+      this.offerFlag = 0});
 
   double get totalPrice => price * count;
 
@@ -112,6 +116,7 @@ class ProductInOrder {
   bool isItemSizeOptionsAvailable;
   double grams;
   String thumbNail;
+  int offerFlag;
 
   ProductInOrder(
       {this.id,
@@ -132,7 +137,8 @@ class ProductInOrder {
       this.itemSizeOption,
       this.isItemSizeOptionsAvailable,
       this.grams,
-      this.thumbNail});
+      this.thumbNail,
+      this.offerFlag = 0});
 
   double get totalPrice => price * count;
 

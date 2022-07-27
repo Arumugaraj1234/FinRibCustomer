@@ -1,4 +1,5 @@
 import 'package:finandrib/models/address.dart';
+import 'package:finandrib/models/banner.dart';
 import 'package:finandrib/models/category.dart';
 import 'package:finandrib/models/order.dart';
 import 'package:finandrib/models/product.dart';
@@ -36,11 +37,22 @@ class DataServices extends ChangeNotifier {
   String get googleApiKey => _googleApiKey;
   String _razorPayKey = '';
   String get razorPayKey => _razorPayKey;
-  void setGoogleAndRazorPayKeys({String googleApiKey, String razorPayKey}) {
+  int _isWithOffer = 0;
+  int get isWithOffer => _isWithOffer;
+  void setGoogleAndRazorPayKeys(
+      {String googleApiKey, String razorPayKey, int isWithOffer}) {
     _googleApiKey = googleApiKey;
     _razorPayKey = razorPayKey;
+    _isWithOffer = isWithOffer;
     print(_googleApiKey);
     print(_razorPayKey);
+    notifyListeners();
+  }
+
+  List<BannerModel> _banners = [];
+  List<BannerModel> get banners => _banners;
+  setBannersData(List<BannerModel> value) {
+    _banners = value;
     notifyListeners();
   }
 
@@ -181,6 +193,8 @@ class DataServices extends ChangeNotifier {
   List<Product> _selectedProducts = [];
   List<Product> get selectedProducts => _selectedProducts;
 
+  Product _selectedOfferProduct;
+
   void setSelectedDishes() {
     _selectedProducts = [];
     _selectedProductsTotalPrice = 0;
@@ -198,11 +212,38 @@ class DataServices extends ChangeNotifier {
         }
       }
     }
+
+    if (_selectedOfferProduct != null) {
+      _selectedProductsTotalPrice =
+          _selectedProductsTotalPrice + _selectedOfferProduct.totalPrice;
+      _selectedProducts.add(_selectedOfferProduct);
+      _selectedItemCount = _selectedItemCount + 1;
+    }
     _grandTotal = _selectedProductsTotalPrice +
         _deliveryCharge -
         _walletAmountUsed -
         _discountAmount +
         _gst;
+    notifyListeners();
+  }
+
+  addOfferItemToSelectedDishes(Product product) {
+    _selectedOfferProduct = product;
+    _selectedProducts.add(product);
+    print(_selectedProducts);
+    _selectedProductsTotalPrice =
+        _selectedProductsTotalPrice + product.totalPrice;
+    _grandTotal = _selectedProductsTotalPrice +
+        _deliveryCharge -
+        _walletAmountUsed -
+        _discountAmount +
+        _gst;
+    notifyListeners();
+  }
+
+  removeSelectedOfferProduct() {
+    _selectedOfferProduct = null;
+    setSelectedDishes();
   }
 
   //double.parse((12.3412).toStringAsFixed(2));
@@ -495,6 +536,7 @@ class DataServices extends ChangeNotifier {
     _deliveryCharge = 0;
     _discountAmount = 0;
     _promoOffer = null;
+    _selectedOfferProduct = null;
   }
 
   List<Order> _liveOrders = List<Order>();

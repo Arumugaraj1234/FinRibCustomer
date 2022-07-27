@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:finandrib/models/category.dart';
 import 'package:finandrib/models/network_response.dart';
+import 'package:finandrib/models/product.dart';
 import 'package:finandrib/models/quality.dart';
 import 'package:finandrib/models/shop.dart';
 import 'package:finandrib/screens/cart_screen.dart';
 import 'package:finandrib/screens/main_drawer.dart';
 import 'package:finandrib/screens/order_track_screen.dart';
 import 'package:finandrib/screens/product_group_screen.dart';
+import 'package:finandrib/screens/product_screen.dart';
 import 'package:finandrib/support_files/constants.dart';
 import 'package:finandrib/support_files/data_services.dart';
 import 'package:finandrib/support_files/network_services.dart';
@@ -82,6 +86,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
   void _showSnackBar(String text) {
     _scaffoldKey.currentState
         .showSnackBar(new SnackBar(content: new Text(text)));
+  }
+
+  Image imageFromBase64String(String base64String) {
+    return Image.memory(base64Decode(base64String));
   }
 
   void _startTimerToCheckForActiveOrders() {
@@ -401,7 +409,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
           services: dataServices,
         ),
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(30.0),
+          preferredSize: Size.fromHeight(40.0),
           child: AppBar(
             leading: Builder(builder: (context) {
               return Transform.translate(
@@ -532,18 +540,52 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     child: CarouselSlider(
                       options: CarouselOptions(
                           autoPlay: true, reverse: true, viewportFraction: 1.0),
-                      items: _headerImages
-                          .map(
-                            (item) => Container(
+                      items: dataServices.banners.map(
+                        (banner) {
+                          // final byteImage =
+                          //     Base64Decoder().convert(banner.base64Image);
+                          return GestureDetector(
+                            onTap: () {
+                              if (banner.categoryId != 0) {
+                                int categoryIndex = dataServices.categories
+                                    .indexWhere((element) =>
+                                        element.id == banner.categoryId);
+                                if (categoryIndex >= 0) {
+                                  int subCategoryIndex = dataServices
+                                      .categories[categoryIndex].subCategories
+                                      .indexWhere((element) =>
+                                          element.id == banner.subCategoryId);
+
+                                  if (subCategoryIndex >= 0) {
+                                    List<Product> products = dataServices
+                                        .categories[categoryIndex]
+                                        .subCategories[subCategoryIndex]
+                                        .products;
+                                    if (products.isNotEmpty) {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(builder: (cxt) {
+                                          return ProductScreen(
+                                            catIndex: categoryIndex,
+                                            subCatIndex: subCategoryIndex,
+                                          );
+                                        }),
+                                      );
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            child: Container(
                               decoration: BoxDecoration(
                                 border: Border.all(color: Colors.white),
                                 image: DecorationImage(
-                                    image: NetworkImage(item),
-                                    fit: BoxFit.cover),
+                                    image: NetworkImage(banner.imageUrl),
+                                    fit: BoxFit.fill),
                               ),
                             ),
-                          )
-                          .toList(),
+                          );
+                        },
+                      ).toList(),
                     ),
                   ),
                   Container(

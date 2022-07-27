@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-double kCurrentVersion = 2.0;
+double kCurrentVersion = 3.0;
 
 //MARK:- HEADERS
 const kHeader = {"Content-Type": "application/json"};
@@ -37,6 +37,7 @@ const kUrlToCheckForLiveOrder = kBaseUrl + 'ActiveOrder';
 const kUrlToNotifyDish = kBaseUrl + 'NotifyDish';
 const kUrlToApplyRatings = kBaseUrl + 'ApplyRating';
 const kUrlToGetDeliveryCharges = kBaseUrl + 'GetDeliveryFee';
+const kGetOffer = kBaseUrl + "GetOffer";
 
 const karkblueish = Color(0xFF041f54);
 String kMoneySymbol = '${String.fromCharCodes(new Runes('\u20B9'))}';

@@ -1163,7 +1163,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                             dish_id: sel.id,
                                             qty: sel.count,
                                             cutSize: sel.cuttingSize,
-                                            itemSize: sel.itemSize);
+                                            itemSize: sel.itemSize,
+                                            rate: sel.totalPrice,
+                                            offerFlag: sel.offerFlag);
                                         selectedproducts.add(s);
                                       }
 
@@ -1493,7 +1495,7 @@ class CheckOutProductCard extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            GestureDetector(
+                            /* GestureDetector(
                               onTap: onMinusPressed,
                               child: Icon(
                                 Icons.remove_circle,
@@ -1503,13 +1505,13 @@ class CheckOutProductCard extends StatelessWidget {
                             ),
                             SizedBox(
                               width: 10,
-                            ),
+                            ),*/
                             Text(
                               product.count.toString(),
                               style:
                                   kTextStyleCalibri300.copyWith(fontSize: 16),
                             ),
-                            SizedBox(
+                            /*SizedBox(
                               width: 10,
                             ),
                             GestureDetector(
@@ -1519,9 +1521,13 @@ class CheckOutProductCard extends StatelessWidget {
                                 color: Colors.deepOrange,
                                 size: 20,
                               ),
-                            ),
+                            ),*/
                           ],
                         ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Text("-"),
                         SizedBox(
                           width: 10,
                         ),

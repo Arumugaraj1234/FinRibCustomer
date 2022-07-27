@@ -214,7 +214,7 @@ class MainDrawer extends StatelessWidget {
             ),
             Center(
               child: Text(
-                'V1.0',
+                'V1.21.0',
               ),
             ),
             SizedBox(

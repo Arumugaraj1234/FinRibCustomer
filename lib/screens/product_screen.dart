@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 import 'cart_screen.dart';
+import 'dart:math' as math;
 
 class ProductScreen extends StatefulWidget {
   final int catIndex;
@@ -593,30 +594,40 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            height: product.isDescriptionShown ? 10 : 0,
+                            height: product.isDescriptionShown ? 0 : 0,
                           ),
                           GestureDetector(
                             onTap: setDescriptionStatus,
                             child: Center(
-                              child: Container(
-                                color: Colors.deepOrange,
-                                height: 25,
-                                width: 25,
-                                child: Center(
+                              child: Center(
+                                child: Transform.rotate(
+                                  angle:
+                                      (product.isDescriptionShown ? 270 : 90) *
+                                          math.pi /
+                                          180,
                                   child: Icon(
-                                    product.isDescriptionShown
-                                        ? Icons.arrow_drop_up
-                                        : Icons.arrow_drop_down,
+                                    Icons.double_arrow,
                                     size: 25,
-                                    color: Colors.white,
+                                    color: Colors.deepOrange,
                                   ),
                                 ),
                               ),
                             ),
                           ),
                           SizedBox(
-                            height: 10,
+                            height: 2,
                           )
+
+                          /*Icon(
+                            product.isDescriptionShown
+                                ? Icons.double_arrow
+                                : Icons.double_arrow,
+                            size: 25,
+                            color: Colors.deepOrange,
+                          )*/
+
+                          // Icons.arrow_drop_up
+                          //     : Icons.arrow_drop_down,
                         ],
                       ),
                     ),

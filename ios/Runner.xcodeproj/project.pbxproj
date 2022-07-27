@@ -400,7 +400,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 1.19.0;
+				MARKETING_VERSION = 1.21.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clt.fin-and-rib";
 				PRODUCT_NAME = "Fin & Rib";
 				PROVISIONING_PROFILE_SPECIFIER = Fin_Rib_Live;
@@ -546,7 +546,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 1.19.0;
+				MARKETING_VERSION = 1.21.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clt.fin-and-rib";
 				PRODUCT_NAME = "Fin & Rib";
 				PROVISIONING_PROFILE_SPECIFIER = Fin_Rib_Live;
@@ -584,7 +584,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 1.19.0;
+				MARKETING_VERSION = 1.21.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clt.fin-and-rib";
 				PRODUCT_NAME = "Fin & Rib";
 				PROVISIONING_PROFILE_SPECIFIER = Fin_Rib_Live;

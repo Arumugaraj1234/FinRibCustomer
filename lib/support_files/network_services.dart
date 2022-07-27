@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:finandrib/models/address.dart';
+import 'package:finandrib/models/banner.dart';
 import 'package:finandrib/models/category.dart';
 import 'package:finandrib/models/init_settings.dart';
 import 'package:finandrib/models/network_response.dart';
@@ -94,13 +95,38 @@ class NetworkServices {
           String appInstruction = responseData['message'];
           String googleKey = responseData['google_api_key'] ?? '';
           String razorKey = responseData['razor_pay_key'] ?? '';
+          int isWithOffer = responseData["with_offer"] ?? 0;
           Provider.of<DataServices>(context, listen: false)
               .setGoogleAndRazorPayKeys(
-                  googleApiKey: googleKey, razorPayKey: razorKey);
+                  googleApiKey: googleKey,
+                  razorPayKey: razorKey,
+                  isWithOffer: isWithOffer);
           InitSettings initSettings = InitSettings(
               status: appStatus,
               message: appInstruction,
               latestVersion: latVersion);
+
+          List<BannerModel> banners = [];
+
+          var bannersData = jsonData['Banners'];
+          String baseImageUrl = jsonData['URL'];
+
+          for (var b in bannersData) {
+            int bannerId = b["id"] ?? 0;
+            String imageName = b["image_path"] ?? "";
+            String imageUrl = baseImageUrl + imageName;
+            int categoryId = b["main_category_id"] ?? 0;
+            int subCategoryId = b["sub_category_id"] ?? 0;
+            int productId = b["dish_id"] ?? 0;
+
+            BannerModel banner = BannerModel(
+                bannerId, imageUrl, categoryId, subCategoryId, productId);
+            banners.add(banner);
+          }
+
+          Provider.of<DataServices>(context, listen: false)
+              .setBannersData(banners);
+
           responseValue = NetworkResponse(
               code: responseCode, message: responseMessage, data: initSettings);
         } else {
@@ -463,6 +489,8 @@ class NetworkServices {
       params['name'] = userName;
       var body = json.encode(params);
 
+      print(body);
+
       http.Response response =
           await http.post(kUrlToOtpVerification, headers: kHeader, body: body);
       String data = response.body;
@@ -470,6 +498,8 @@ class NetworkServices {
       if (response.statusCode == 200) {
         int responseCode = jsonData['Code'];
         String responseMessage = jsonData['Message'];
+
+        print(responseMessage);
 
         if (responseCode == 1) {
           // Otp got verified successfully. Parse the data
@@ -887,13 +917,18 @@ class NetworkServices {
       double deliveryCharge}) async {
     NetworkResponse responseValue;
     try {
-      List<Map<String, int>> dishDetails = [];
+      List<Map<String, dynamic>> dishDetails = [];
       for (var di in dishes) {
-        var abc = new Map<String, int>();
+        var abc = new Map<String, dynamic>();
         abc['dish_id'] = di.dish_id;
         abc['qty'] = di.qty;
+        abc['dish_size'] = di.itemSize;
+        abc['dish_cutting'] = di.cutSize;
+        abc['rate'] = di.rate;
+        abc['is_offer'] = di.offerFlag;
         dishDetails.add(abc);
       }
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       int userId = prefs.getInt(kUserIdKey);
       var params = new Map<String, dynamic>();
@@ -2065,6 +2100,115 @@ class NetworkServices {
         }
         responseValue = NetworkResponse(
             code: responseCode, message: responseMessage, data: null);
+      } else {
+        // The response code is not 200.
+        String message = jsonData['Message'];
+        responseValue = NetworkResponse(code: 0, message: message, data: null);
+      }
+    } catch (e) {
+      // The webservice throws an error.
+      String err = e.toString();
+      responseValue = NetworkResponse(code: 0, message: err, data: null);
+    }
+    return responseValue;
+  }
+
+  Future<NetworkResponse> getOffers(
+      {double amount, List<int> dishes, BuildContext context}) async {
+    NetworkResponse responseValue;
+    try {
+      var params = new Map<String, dynamic>();
+      params['amount'] = amount;
+      params['dish_id'] = dishes;
+
+      var body = json.encode(params);
+      print(body);
+      http.Response response =
+          await http.post(kGetOffer, headers: kHeader, body: body);
+      String data = response.body;
+      var jsonData = jsonDecode(data);
+      print(jsonData);
+      if (response.statusCode == 200) {
+        int responseCode = jsonData['Code'];
+        String responseMessage = jsonData['Message'];
+        if (responseCode == 1) {
+          var responseData = jsonData['Data'];
+
+          List<Product> totalProducts = [];
+          for (var product in responseData) {
+            int productId = product['dish_id'];
+            String productName = product['dish_name'];
+            String productIconLink = product['dish_icon'];
+
+            String productDescription = product['description'] ?? '';
+            int productTypeFlag = product['dish_type'];
+            int availableNoOfStock = product['dish_stocks'];
+            String productThumbnail = product['dish_thumbnail'];
+            if (productThumbnail.endsWith('/')) {
+              productThumbnail = productIconLink;
+            }
+            int gstPercentage = product['gst'] ?? 0;
+            int productGramsQtyInInt = product['grams'] ?? 0;
+            double productGramsQtyInDouble = productGramsQtyInInt.toDouble();
+            String productGrossWeight = product['gross_weight'] ?? '';
+            String productNetWeight = product['net_weight'] ?? '';
+            String productQtyDescription = 'Gross: $productGrossWeight';
+            if (productNetWeight != '') {
+              productQtyDescription =
+                  '$productQtyDescription  Net: $productNetWeight';
+            }
+            //int cuttingOption = dish['slice_opt'] ?? 0;
+            double productPrice = product['rate'];
+            double productOffRate = product['spl_rate'] ?? 0.0;
+
+            List<dynamic> cuttingOptionsDynamic = product['cuttings'];
+            List<String> cuttingOptions = [];
+            for (var c in cuttingOptionsDynamic) {
+              cuttingOptions.add('$c');
+            }
+            bool isCutOptionsAvailable =
+                (cuttingOptions.length > 0) ? true : false;
+            List<dynamic> productSizeOptionDynamic = product['sizes'];
+            List<String> productSizeOption = [];
+            for (var p in productSizeOptionDynamic) {
+              productSizeOption.add('$p');
+            }
+            bool isProductSizeOptionsAvailable =
+                (productSizeOption.length > 0) ? true : false;
+
+            Product productModel = Product(
+                id: productId,
+                imageLink: productIconLink,
+                name: productName,
+                price: productOffRate == 0 ? productPrice : productOffRate,
+                quantity: '1 KiloGrams',
+                count: 0,
+                availableStocks: availableNoOfStock,
+                isDescriptionShown: false,
+                cuttingSize: '',
+                description: productDescription,
+                qtyDescription: productQtyDescription,
+                cutOffPrice: productOffRate == 0 ? 0 : productPrice,
+                isCuttingOptionsAvailable: isCutOptionsAvailable,
+                cuttingSizeOptions: cuttingOptions,
+                isItemSizeOptionsAvailable: isProductSizeOptionsAvailable,
+                itemSizeOptions: productSizeOption,
+                itemSize: '',
+                grams: productGramsQtyInDouble,
+                thumbNail: productThumbnail,
+                gstPercentage: gstPercentage,
+                offerFlag: 1);
+            print(productModel);
+            totalProducts.add(productModel);
+          }
+          responseValue = NetworkResponse(
+              code: responseCode,
+              message: responseMessage,
+              data: totalProducts);
+        } else {
+          responseValue = NetworkResponse(
+              code: responseCode, message: responseMessage, data: null);
+        }
       } else {
         // The response code is not 200.
         String message = jsonData['Message'];

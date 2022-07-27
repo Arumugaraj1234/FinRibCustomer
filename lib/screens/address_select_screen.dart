@@ -1,5 +1,6 @@
 import 'package:finandrib/models/address.dart';
 import 'package:finandrib/models/network_response.dart';
+import 'package:finandrib/models/product.dart';
 import 'package:finandrib/support_files/constants.dart';
 import 'package:finandrib/support_files/data_services.dart';
 import 'package:finandrib/support_files/network_services.dart';
@@ -55,6 +56,7 @@ class _AddressSelectScreenState extends State<AddressSelectScreen> {
                 color: Colors.white,
               ),
               onPressed: () {
+                dataServices.removeSelectedOfferProduct();
                 Navigator.popUntil(
                   context,
                   ModalRoute.withName('HomeScreen'),
@@ -229,6 +231,9 @@ class _AddressSelectScreenState extends State<AddressSelectScreen> {
                         height: double.infinity,
                         child: FlatButton(
                           onPressed: () async {
+                            for (Product p in dataServices.selectedProducts) {
+                              print("IS OFFER: ${p.offerFlag}");
+                            }
                             if (dataServices.selectedAddress != null) {
                               ProgressDialog dialog =
                                   new ProgressDialog(context);

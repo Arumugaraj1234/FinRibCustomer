@@ -154,7 +154,12 @@ class _RewardsScreenState extends State<RewardsScreen> {
                           '$kMoneySymbol ${dataServices.walletValue.toStringAsFixed(2)}',
                           style: kTextStyleCalibriBold.copyWith(
                               fontSize: 28.0, color: Colors.deepOrange),
-                        )
+                        ),
+                        Text(
+                          '( The amount will be added to wallet once the order got completed )',
+                          style: kTextStyleCalibri600.copyWith(
+                              fontSize: 12.0, color: Colors.black),
+                        ),
                       ],
                     ),
                   ),
