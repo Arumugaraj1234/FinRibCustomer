@@ -10,7 +10,6 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:finandrib/screens/google_map_screen.dart';
 import 'package:finandrib/screens/address_entry_screen.dart';
-import 'package:finandrib/screens/delivery_type_screen.dart';
 import 'delivery_type_one_screen.dart';
 import 'dart:io' show Platform;
 
@@ -235,6 +234,7 @@ class _AddressSelectScreenState extends State<AddressSelectScreen> {
                               print("IS OFFER: ${p.offerFlag}");
                             }
                             if (dataServices.selectedAddress != null) {
+                              print(dataServices.selectedAddress.fullAddress);
                               ProgressDialog dialog =
                                   new ProgressDialog(context);
                               await dialog.show();

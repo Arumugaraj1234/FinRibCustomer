@@ -22,6 +22,7 @@ class Product {
   String thumbNail;
   int gstPercentage;
   int offerFlag;
+  int offerId;
 
   Product(
       {this.id,
@@ -44,7 +45,8 @@ class Product {
       this.grams,
       this.thumbNail,
       this.gstPercentage,
-      this.offerFlag = 0});
+      this.offerFlag = 0,
+      this.offerId});
 
   double get totalPrice => price * count;
 

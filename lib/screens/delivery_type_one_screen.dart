@@ -1009,6 +1009,7 @@ class _DeliveryTypeScreenState extends State<DeliveryTypeOneScreen> {
                                 _wallet.usablePercentage,
                                 _wallet.minBillAmountForDiscount);*/
                             dataServices.setPromoOffer(null);
+                            dataServices.setSelectedDishes();
                             if (_deliveryType ==
                                 DeliveryType.scheduledDelivery) {
                               dataServices.setDeliveryCharge(

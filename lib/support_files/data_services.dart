@@ -194,6 +194,7 @@ class DataServices extends ChangeNotifier {
   List<Product> get selectedProducts => _selectedProducts;
 
   Product _selectedOfferProduct;
+  Product get selectedOfferProduct => _selectedOfferProduct;
 
   void setSelectedDishes() {
     _selectedProducts = [];
@@ -216,8 +217,8 @@ class DataServices extends ChangeNotifier {
     if (_selectedOfferProduct != null) {
       _selectedProductsTotalPrice =
           _selectedProductsTotalPrice + _selectedOfferProduct.totalPrice;
-      _selectedProducts.add(_selectedOfferProduct);
-      _selectedItemCount = _selectedItemCount + 1;
+      //_selectedProducts.add(_selectedOfferProduct);
+      //_selectedItemCount = _selectedItemCount + 1;
     }
     _grandTotal = _selectedProductsTotalPrice +
         _deliveryCharge -
@@ -229,8 +230,6 @@ class DataServices extends ChangeNotifier {
 
   addOfferItemToSelectedDishes(Product product) {
     _selectedOfferProduct = product;
-    _selectedProducts.add(product);
-    print(_selectedProducts);
     _selectedProductsTotalPrice =
         _selectedProductsTotalPrice + product.totalPrice;
     _grandTotal = _selectedProductsTotalPrice +
@@ -244,6 +243,7 @@ class DataServices extends ChangeNotifier {
   removeSelectedOfferProduct() {
     _selectedOfferProduct = null;
     setSelectedDishes();
+    notifyListeners();
   }
 
   //double.parse((12.3412).toStringAsFixed(2));
@@ -254,7 +254,6 @@ class DataServices extends ChangeNotifier {
     _selectedProductsTotalPrice = 0;
     _gst = 0;
     for (var dish in _selectedProducts) {
-      print('Hi');
       _selectedProductsTotalPrice =
           _selectedProductsTotalPrice + dish.totalPrice;
       print(dish.gstAmount());
@@ -304,10 +303,6 @@ class DataServices extends ChangeNotifier {
   }
 
   void removeItemInSelectedDishes(int index) {
-    ///dgkjfdgkfj
-    ///
-    ///
-    ///
     _selectedProducts[index].count--;
     _selectedItemCount--;
     _selectedProductsTotalPrice = 0;
@@ -384,7 +379,7 @@ class DataServices extends ChangeNotifier {
   void setAllAddress(List<Address> newValue) {
     _allAddress = newValue;
     if (newValue.length > 0) {
-      _selectedAddress = newValue[0];
+      _selectedAddress = newValue[_selectedAddressIndex];
     } else {
       _selectedAddress = null;
     }

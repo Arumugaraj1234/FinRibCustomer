@@ -296,6 +296,7 @@ class NetworkServices {
                 }
                 bool isProductSizeOptionsAvailable =
                     (productSizeOption.length > 0) ? true : false;
+                int offerId = product['offer_id'] ?? 0;
 
                 Product productModel = Product(
                     id: productId,
@@ -317,7 +318,8 @@ class NetworkServices {
                     itemSize: '',
                     grams: productGramsQtyInDouble,
                     thumbNail: productThumbnail,
-                    gstPercentage: gstPercentage);
+                    gstPercentage: gstPercentage,
+                    offerId: offerId);
                 totalProducts.add(productModel);
               }
 
@@ -2073,6 +2075,7 @@ class NetworkServices {
       params['post_code'] = postal;
 
       var body = json.encode(params);
+      print(body);
       http.Response response = await http.post(kUrlToGetDeliveryCharges,
           headers: kHeader, body: body);
       String data = response.body;
@@ -2175,6 +2178,7 @@ class NetworkServices {
             }
             bool isProductSizeOptionsAvailable =
                 (productSizeOption.length > 0) ? true : false;
+            int offerId = product['offer_id'] ?? 0;
 
             Product productModel = Product(
                 id: productId,
@@ -2197,7 +2201,8 @@ class NetworkServices {
                 grams: productGramsQtyInDouble,
                 thumbNail: productThumbnail,
                 gstPercentage: gstPercentage,
-                offerFlag: 1);
+                offerFlag: 1,
+                offerId: offerId);
             print(productModel);
             totalProducts.add(productModel);
           }

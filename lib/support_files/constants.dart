@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-double kCurrentVersion = 3.0;
+double kCurrentVersion = 4.0; //todo: Update the latest version
 
 //MARK:- HEADERS
 const kHeader = {"Content-Type": "application/json"};

@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
-import 'dart:io';
+
 import 'package:finandrib/models/network_response.dart';
 import 'package:finandrib/models/product.dart';
 import 'package:finandrib/models/reward.dart';
 import 'package:finandrib/models/selected_product_model.dart';
+import 'package:finandrib/screens/check_razor.dart';
 import 'package:finandrib/screens/delivery_type_screen.dart';
 import 'package:finandrib/screens/scratch_screen.dart';
 import 'package:finandrib/support_files/constants.dart';
@@ -19,7 +19,6 @@ import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
-import 'package:finandrib/screens/check_razor.dart';
 //import 'package:flutter_sound_platform_interface/flutter_sound_recorder_platform_interface.dart';
 
 // typedef _Fn = void Function();
@@ -52,6 +51,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool _isWalletUsed = false;
   int _walletAlertFlag = 0;
+
+  int noOfItems = 0;
+  bool isOfferAdded = false;
 
   //todo: Sound recordings
 
@@ -186,6 +188,20 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
       });
     });
     _setFilePath();*/
+    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+      // List<Product> products =
+      //     Provider.of<DataServices>(context, listen: false).selectedProducts;
+      // int a = products.length;
+      Product p = Provider.of<DataServices>(context, listen: false)
+          .selectedOfferProduct;
+      print("Raj $p");
+
+      if (p != null) {
+        setState(() {
+          noOfItems = 1;
+        });
+      }
+    });
     super.initState();
     _couponFN.addListener(_onFocusChange);
   }
@@ -489,8 +505,9 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                               shrinkWrap: true,
                               itemCount: dataServices.selectedProducts.length,
                               itemBuilder: (context, index) {
-                                Product product =
-                                    dataServices.selectedProducts[index];
+                                List<Product> products =
+                                    dataServices.selectedProducts;
+                                Product product = products[index];
                                 return CheckOutProductCard(
                                   product: product,
                                   onMinusPressed: () {
@@ -518,6 +535,19 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                 );
                               }),
                         ),
+                        dataServices.selectedOfferProduct != null
+                            ? ConstrainedBox(
+                                constraints: BoxConstraints(
+                                    maxHeight: 100.0, minHeight: 50.0),
+                                child: CheckOutProductCard(
+                                  product: dataServices.selectedOfferProduct,
+                                  onMinusPressed: () {},
+                                  onPlusPressed: () {},
+                                  slNo:
+                                      dataServices.selectedProducts.length + 1,
+                                ),
+                              )
+                            : Container(),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 15),
                           child: Row(
@@ -1158,16 +1188,35 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                           [];
                                       List<Product> selected =
                                           dataServices.selectedProducts;
+                                      print(selected);
                                       for (var sel in selected) {
+                                        print(sel.name);
                                         SelectedProduct s = SelectedProduct(
                                             dish_id: sel.id,
                                             qty: sel.count,
                                             cutSize: sel.cuttingSize,
                                             itemSize: sel.itemSize,
                                             rate: sel.totalPrice,
-                                            offerFlag: sel.offerFlag);
+                                            offerFlag: 0);
                                         selectedproducts.add(s);
                                       }
+
+                                      if (dataServices.selectedOfferProduct !=
+                                          null) {
+                                        Product p =
+                                            dataServices.selectedOfferProduct;
+                                        print(p.name);
+                                        SelectedProduct s = SelectedProduct(
+                                            dish_id: p.id,
+                                            qty: p.count,
+                                            cutSize: p.cuttingSize,
+                                            itemSize: p.itemSize,
+                                            rate: p.totalPrice,
+                                            offerFlag: p.offerId);
+                                        selectedproducts.add(s);
+                                      }
+
+                                      print(selectedproducts);
 
                                       if (_paymentOption ==
                                           PaymentOption.onlinePayment) {
@@ -1322,7 +1371,18 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                               _showSnackBar(
                                                   'Payment got cancelled');
                                             }
-                                          } else {
+                                          }
+                                          else if (response.code == 3){
+NetworkServices.shared
+    .showAlertDialog(
+    context,
+    'Failed',
+    response.message, () {
+      dataServices.removeSelectedOfferProduct();
+  Navigator.pop(context);
+});
+                                          }
+                                          else {
                                             _showSnackBar(response.message);
                                           }
                                         } else {
@@ -1388,7 +1448,16 @@ class _OrderConfirmationScreenState extends State<OrderConfirmationScreen> {
                                               );
                                             }));
                                           });
-                                        } else {
+                                        } else if (response.code == 3){
+                                          NetworkServices.shared
+                                              .showAlertDialog(
+                                              context,
+                                              'Failed',
+                                              response.message, () {
+                                            dataServices.removeSelectedOfferProduct();
+                                            Navigator.pop(context);
+                                          });
+                                        }else {
                                           NetworkServices.shared
                                               .showAlertDialog(
                                                   context,

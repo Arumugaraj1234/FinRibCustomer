@@ -87,8 +87,8 @@ PODS:
   - package_info (0.0.1):
     - Flutter
   - PromisesObjC (1.2.12)
-  - Protobuf (3.19.4)
-  - razorpay-pod (1.2.1)
+  - Protobuf (3.21.5)
+  - razorpay-pod (1.2.8)
   - razorpay_flutter (1.1.10):
     - Flutter
     - razorpay-pod
@@ -192,8 +192,8 @@ SPEC CHECKSUMS:
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
-  Protobuf: 235750e4696ff59fb07d949a9dbbc92b3c0700fe
-  razorpay-pod: 372528dcba385d95d384aa8abc44feeb7a644d4e
+  Protobuf: 7504b04fffcf6662ad629694db8231f5e744327f
+  razorpay-pod: 3ec6fe82e7d5927013cfbbef81a880188c86b077
   razorpay_flutter: 84b3bfd206ae9c9c2a9ba585524a1b3d8102b6c1
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
